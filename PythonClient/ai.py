@@ -133,7 +133,7 @@ class AI(RealtimeAI):
                 else:
                     self.warehouse_agent_move(forward=True)
 
-        if wagent.position == Position(5) and sum(wagent.materials_bag.values()) == 0 and self.wagent_ammo_loaded:
+        if wagent.position.index == 5 and sum(wagent.materials_bag.values()) == 0 and self.wagent_ammo_loaded:
             if sum(self.orders.required_materials_list.values()) == 0:
                     if (other_base.units[UnitType.Soldier].health + other_base.units[UnitType.HeavyMachineGunner].health + other_base.units[UnitType.Mortar].health) > 1800:
                         if base.units[UnitType.Soldier].health > 1200:
@@ -224,8 +224,15 @@ class AI(RealtimeAI):
         # ------ Factory
         elif current_fagent_position == ECell.Machine:
 
+            # Halat haye mostalqel az Machine Status
+            if fagent.position.index == 7 and wagent.position.index >= 4 and sum(fagent.ammos_bag.values()) != 0:
+                self.factory_agent_move(forward= False)
+
+            elif fagent.position.index == 8 and wagent.position.index >= 5 and fagent.ammos_bag[AmmoType.GoldenTankShell] != 0:
+                self.factory_agent_move(forward= False)
+
             # Idle
-            if base.factory.machines[fagent.position].status == MachineStatus.Idle:
+            elif base.factory.machines[fagent.position].status == MachineStatus.Idle:
 
                 # age order dare bezare
                 if self.orders.fagent_orders != []:
